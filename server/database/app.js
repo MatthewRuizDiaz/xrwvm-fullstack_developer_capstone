@@ -72,7 +72,7 @@ catch {
 app.get('/fetchDealers/:state', async (req, res) => {
 //Write your code here
 try {
-    const dealer = await Dealerships.find({dealership: req.params.state});
+    const dealer = await Dealerships.find({state: req.params.state});
     res.json(dealer);
 }
 catch {
@@ -84,7 +84,7 @@ catch {
 app.get('/fetchDealer/:id', async (req, res) => {
 //Write your code here
 try {
-    const dealer = await Dealerships.find({dealership: req.params.id});
+    const dealer = await Dealerships.find({id: req.params.id});
     res.json(dealer);
 }
 catch {
