@@ -1,5 +1,6 @@
 # Uncomment the imports below before you add the function code
 import requests
+import json
 import os
 from dotenv import load_dotenv
 
@@ -42,10 +43,11 @@ def analyze_review_sentiments(text):
         print("Network exception occurred")
 
 def post_review(data_dict):
-    request_url = backend_url+"/insert_review"
+    request_url = backend_url + "/insert_review"
     try:
-        response = requests.post(request_url,json=data_dict)
-        print(response.json())
+        response = requests.post(request_url, json=data_dict)
+        print(f"Express API Status Code: {response.status_code}")
+        print(f"Express API Response Body: {response.text}")
         return response.json()
-    except:
-        print("Network exception occurred")
+    except Exception as err:
+        print(f"Network exception occurred: {err}")

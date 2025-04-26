@@ -6,6 +6,7 @@ const app = express()
 const port = 3030;
 
 app.use(cors())
+app.use(express.json());
 app.use(require('body-parser').urlencoded({ extended: false }));
 
 const reviews_data = JSON.parse(fs.readFileSync("reviews.json", 'utf8'));
@@ -93,30 +94,30 @@ catch {
 });
 
 //Express route to insert review
-app.post('/insert_review', express.raw({ type: '*/*' }), async (req, res) => {
-  data = JSON.parse(req.body);
-  const documents = await Reviews.find().sort( { id: -1 } )
-  let new_id = documents[0]['id']+1
-
-  const review = new Reviews({
-		"id": new_id,
-		"name": data['name'],
-		"dealership": data['dealership'],
-		"review": data['review'],
-		"purchase": data['purchase'],
-		"purchase_date": data['purchase_date'],
-		"car_make": data['car_make'],
-		"car_model": data['car_model'],
-		"car_year": data['car_year'],
-	});
-
-  try {
-    const savedReview = await review.save();
-    res.json(savedReview);
-  } catch (error) {
-		console.log(error);
-    res.status(500).json({ error: 'Error inserting review' });
-  }
+app.post('/insert_review', async (req, res) => {
+    console.log("Received /insert_review request");
+    console.log("Request Body:", req.body);
+    const data = req.body;
+    const documents = await Reviews.find().sort( { id: -1 } );
+    const new_id = documents[0]['id'] + 1;
+    const review = new Reviews({
+        "id": new_id,
+        "name": data['name'],
+        "dealership": data['dealership'],
+        "review": data['review'],
+        "purchase": data['purchase'],
+        "purchase_date": data['purchase_date'],
+        "car_make": data['car_make'],
+        "car_model": data['car_model'],
+        "car_year": data['car_year'],
+    });
+    try {
+        const savedReview = await review.save();
+        res.json(savedReview);
+    } catch (error) {
+        console.error("Error inserting review:", error);
+        res.status(500).json({ error: 'Error inserting review' });
+    }
 });
 
 // Start the Express server
