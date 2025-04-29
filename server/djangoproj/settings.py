@@ -1,3 +1,4 @@
+# settings.py
 """
 Django settings for djangoproj project.
 
@@ -13,7 +14,6 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 import os
 from pathlib import Path
 
-
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -22,17 +22,27 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY =\
-    'django-insecure-ccow$tz_=9%dxu4(0%^(z%nx32#s@(zt9$ih@)5l54yny)wm-0'
+SECRET_KEY = os.getenv('DJANGO_SECRET_KEY', 'django-insecure-default-placeholder-key') # Use env var or a default
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.getenv('DJANGO_DEBUG', 'True') == 'True' # Control with env var
 
-ALLOWED_HOSTS = ['localhost', 'https://matthewruizd-8000.theiadockernext-1-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai']
-CSRF_TRUSTED_ORIGINS = ['https://matthewruizd-8000.theiadockernext-1-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai']
+# Consider using environment variables for allowed hosts in production
+ALLOWED_HOSTS = [
+    'localhost',
+    '127.0.0.1',
+    '.theiadockernext-1-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai', # Allow subdomains
+    # Add other allowed hosts as needed
+]
+# Adjust CSRF trusted origins similarly
+CSRF_TRUSTED_ORIGINS = [
+    'https://matthewruizd-8000.theiadockernext-1-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai',
+    # Add others if necessary, e.g., 'http://localhost:8000'
+]
 
+# Ensure REST_FRAMEWORK settings are appropriate for your auth setup
 REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': [],
+    'DEFAULT_AUTHENTICATION_CLASSES': [], # Only if intentionally no DRF auth
 }
 
 # Application definition
@@ -45,12 +55,15 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    # Add 'rest_framework' if you use Django REST Framework features
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
+    # Consider CSRF middleware if not using @csrf_exempt extensively
+    # 'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
@@ -62,9 +75,10 @@ TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [
-            os.path.join(BASE_DIR, 'frontend/static'),
-            os.path.join(BASE_DIR, 'frontend/build'),
-            os.path.join(BASE_DIR, 'frontend/build/static'),
+            # Prefer using Path objects for consistency
+            BASE_DIR / 'frontend/static',
+            BASE_DIR / 'frontend/build',
+            # BASE_DIR / 'frontend/build/static', # Often served directly
         ],
         'APP_DIRS': True,
         'OPTIONS': {
@@ -91,22 +105,21 @@ DATABASES = {
     }
 }
 
+# Password validation
+# https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
+
 AUTH_PASSWORD_VALIDATORS = [
     {
-        'NAME':
-        'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
+        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator', # noqa E501
     },
     {
-        'NAME':
-        'django.contrib.auth.password_validation.MinimumLengthValidator',
+        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator', # noqa E501
     },
     {
-        'NAME':
-        'django.contrib.auth.password_validation.CommonPasswordValidator',
+        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator', # noqa E501
     },
     {
-        'NAME':
-        'django.contrib.auth.password_validation.NumericPasswordValidator',
+        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator', # noqa E501
     },
 ]
 
@@ -129,8 +142,10 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
 
 STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'static')
-MEDIA_ROOT = os.path.join(STATIC_ROOT, 'media')
+# Defines where `collectstatic` gathers static files
+STATIC_ROOT = BASE_DIR / 'staticfiles' # Changed from 'static' to avoid conflict
+
+MEDIA_ROOT = BASE_DIR / 'media' # Use Path object
 MEDIA_URL = '/media/'
 
 # Default primary key field type
@@ -138,9 +153,9 @@ MEDIA_URL = '/media/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+# Where Django looks for static files NOT belonging to an app during development
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'frontend/static'),
-    os.path.join(BASE_DIR, 'frontend/build'),
-    os.path.join(BASE_DIR, 'frontend/build/static'),
+    # BASE_DIR / 'frontend/static', # Usually served directly or via app static
+    BASE_DIR / 'frontend/build',
+    BASE_DIR / 'frontend/build/static',
 ]
-
