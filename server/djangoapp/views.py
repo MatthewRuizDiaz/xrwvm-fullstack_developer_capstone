@@ -7,7 +7,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth import logout
 # from django.contrib import messages
 # from datetime import datetime
-from .restapis import get_request, analyze_review_sentiments, post_review
+from .restapis import get_request, analyze_review_sentiments # post_review
 from django.http import JsonResponse
 from django.contrib.auth import login, authenticate
 import logging
@@ -89,7 +89,7 @@ def get_cars(request):
     return JsonResponse({"CarModels": cars})
 
 # # Update the `get_dealerships` view to render the index page with
-#Update the `get_dealerships` render list of dealerships
+# Update the `get_dealerships` render list of dealerships
 
 
 def get_dealerships(request, state="All"):
@@ -133,17 +133,17 @@ def get_dealer_details(request, dealer_id):
 
 def add_review(request):
     if request.user.is_anonymous == False:
-        data = json.loads(request.body)
+        # data = json.loads(request.body)
         try:
             # response = post_review(data)
             return JsonResponse({"status": 200})
         except Exception:
             return JsonResponse({
                 "status": 401,
-                "message":"Error in posting review"
+                "message": "Error in posting review"
             })
     else:
         return JsonResponse({
             "status": 403,
-            "message":"Unauthorized"
+            "message": "Unauthorized"
         })
