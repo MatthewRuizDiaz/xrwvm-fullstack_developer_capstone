@@ -27,13 +27,16 @@ SECRET_KEY =\
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
+al_host1 = 'https://matthewruizd-8000.theiadockernext-1'
+al_host2 = '-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai'
+al_hosts_csrf =  al_host1 + al_host2
 
 ALLOWED_HOSTS = [
-    'localhost', 
-    'https://matthewruizd-8000.theiadockernext-1-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai'
+    'localhost',
+    al_hosts_csrf
 ]
 CSRF_TRUSTED_ORIGINS = [
-    'https://matthewruizd-8000.theiadockernext-1-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai'
+    al_hosts_csrf
 ]
 
 REST_FRAMEWORK = {
@@ -95,11 +98,13 @@ DATABASES = {
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
-
+auth_valid1 = 'django.contrib.auth.password_validation.'
+auth_valid2 = 'UserAttributeSimilarityValidator'
+auth_validator = auth_valid1 + auth_valid2
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME':
-        'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
+        auth_validator,
     },
     {
         'NAME':
