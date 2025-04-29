@@ -7,7 +7,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth import logout
 # from django.contrib import messages
 # from datetime import datetime
-from .restapis import get_request, analyze_review_sentiments # post_review
+from .restapis import get_request, analyze_review_sentiments  # post_review
 from django.http import JsonResponse
 from django.contrib.auth import login, authenticate
 import logging
@@ -132,7 +132,7 @@ def get_dealer_details(request, dealer_id):
 
 
 def add_review(request):
-    if request.user.is_anonymous == False:
+    if not request.user.is_anonymous:
         # data = json.loads(request.body)
         try:
             # response = post_review(data)
