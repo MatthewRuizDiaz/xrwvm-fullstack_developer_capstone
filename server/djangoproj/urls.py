@@ -23,21 +23,23 @@ from django.conf import settings
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('djangoapp/', include('djangoapp.urls')),
-    # Serve React frontend build entry point for root and routes handled by React Router
-    # Ensure this TemplateView serves your main index.html from the React build
+    # Serve React frontend build entry point for root and routes handled
+    # by React Router
+    # Ensure this TemplateView serves your main index.html from the
+    # React build
     path('', TemplateView.as_view(template_name="index.html")),
-    path('about/', TemplateView.as_view(template_name="index.html")), # Assume React handles routing
-    path('contact/', TemplateView.as_view(template_name="index.html")), # Assume React handles routing
-    path('login/', TemplateView.as_view(template_name="index.html")), # Assume React handles routing
-    path('register/', TemplateView.as_view(template_name="index.html")), # Assume React handles routing
-    path('dealers/', TemplateView.as_view(template_name="index.html")), # Assume React handles routing
+    path('about/', TemplateView.as_view(template_name="index.html")),
+    path('contact/', TemplateView.as_view(template_name="index.html")),
+    path('login/', TemplateView.as_view(template_name="index.html")),
+    path('register/', TemplateView.as_view(template_name="index.html")),
+    path('dealers/', TemplateView.as_view(template_name="index.html")),
     path(
         'dealer/<int:dealer_id>',
-        TemplateView.as_view(template_name="index.html") # Assume React handles routing
+        TemplateView.as_view(template_name="index.html")
     ),
     path(
         'postreview/<int:dealer_id>',
-        TemplateView.as_view(template_name="index.html") # Assume React handles routing
+        TemplateView.as_view(template_name="index.html")
     ),
 ]
 

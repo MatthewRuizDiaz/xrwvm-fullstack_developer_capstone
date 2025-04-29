@@ -26,7 +26,7 @@ logger = logging.getLogger(__name__)
 def login_user(request):
     # Get username and password from request.POST dictionary
     data = json.loads(request.body)
-    username = data.get('userName') # Use .get for safety
+    username = data.get('userName')  # Use .get for safety
     password = data.get('password')
     if not username or not password:
         return JsonResponse({"error": "Missing username or password"}, status=400)
@@ -136,13 +136,13 @@ def get_dealer_reviews(request, dealer_id):
                 try:
                     # Pass review text to sentiment analyzer
                     sentiment_response = analyze_review_sentiments(
-                        review_detail.get('review', '') # Use .get for safety
+                        review_detail.get('review', '')  # Use .get for safety
                     )
                     # Assign sentiment if analysis was successful
                     if sentiment_response and 'sentiment' in sentiment_response:
-                         review_detail['sentiment'] = sentiment_response['sentiment'].get('label','unknown')
+                        review_detail['sentiment'] = sentiment_response['sentiment'].get('label', 'unknown')
                     else:
-                         review_detail['sentiment'] = 'analysis_failed'
+                        review_detail['sentiment'] = 'analysis_failed'
                 except Exception as e:
                     logger.error(f"Error analyzing sentiment: {e}")
                     review_detail['sentiment'] = 'error'
@@ -160,40 +160,13 @@ def get_dealer_details(request, dealer_id):
         endpoint = f"/fetchDealer/{dealer_id}"
         dealership = get_request(endpoint)
         if dealership is not None:
-             # Assuming the response structure might be nested like {'dealer': {...}}
-             # Adjust based on actual API response
+            # Assuming the response structure might be nested like {'dealer': {...}}
+            # Adjust based on actual API response
             if isinstance(dealership, list) and len(dealership) > 0:
-                 actual_dealer_data = dealership[0] # Take first if it's a list
+                actual_dealer_data = dealership[0]  # Take first if it's a list
             else:
-                 actual_dealer_data = dealership # Assume it's the dict directly
+                actual_dealer_data = dealership  # Assume it's the dict directly
 
             return JsonResponse({"status": 200, "dealer": actual_dealer_data})
         else:
             return JsonResponse({"status": 404, "message": "Dealer not found or error fetching"})
-    else:
-        return JsonResponse({"status": 400, "message": "Bad Request: Missing dealer_id"})
-
-
-# Create a `add_review` view to submit a review
-@csrf_exempt  # Keep csrf_exempt if required by your setup, but consider proper CSRF protection
-def add_review(request):
-    if not request.user.is_authenticated:
-        return JsonResponse({"status": 403, "message": "Unauthorized"})
-
-    try:
-        data = json.loads(request.body)
-        # Add validation for required fields in data if necessary
-        if not data.get('review') or not data.get('dealerId'):
-             return JsonResponse({"status": 400, "message": "Missing review data"})
-
-        response = post_review(data)
-        if response is not None:
-            # Assuming post_review returns JSON response from backend
-            return JsonResponse({"status": 200, "message": "Review posted successfully", "data": response})
-        else:
-             return JsonResponse({"status": 500, "message": "Failed to post review"})
-    except json.JSONDecodeError:
-        return JsonResponse({"status": 400, "message": "Invalid JSON format"})
-    except Exception as e:
-        logger.error(f"Error adding review: {e}")
-        return JsonResponse({"status": 500, "message": "Error in posting review"})
