@@ -29,7 +29,7 @@ SECRET_KEY =\
 DEBUG = True
 al_host1 = 'https://matthewruizd-8000.theiadockernext-1'
 al_host2 = '-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai'
-al_hosts_csrf =  al_host1 + al_host2
+al_hosts_csrf = al_host1 + al_host2
 
 ALLOWED_HOSTS = [
     'localhost',
